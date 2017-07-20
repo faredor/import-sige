@@ -58,7 +58,7 @@ function get_files_in_dir($url){
 	$uploads = wp_upload_dir();
 	if ($handle = opendir($uploads['basedir'].'/'.$url)) {
 		echo "Verzeichnis-Handle: $handle\n";
-		echo "Einträge:\n";
+		echo "EintrÃ¤ge:\n";
 		$images = array();
 		/* Das ist der korrekte Weg, ein Verzeichnis zu durchlaufen. */
 		while (false !== ($file = readdir($handle))) {
@@ -208,7 +208,7 @@ function test_button_action()
 			$searchpattern_single = '/\{gallery\}(.*?),single=(.*?){\/gallery\}/';
 			$searchpattern_normal = '/\{gallery\}(.*?){\/gallery\}/';
 			$new_str = preg_replace($searchpattern_single, "", $str);
-			$final_str = preg_replace($searchpattern_normal, "[gallery]", $new_str);
+			$final_str = preg_replace($searchpattern_normal, '[gallery link="file"]', $new_str);
 			$my_post = array(
 				'ID'	=> $id,
 				'post_content'	=> $final_str
