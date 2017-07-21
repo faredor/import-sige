@@ -8,7 +8,7 @@
    Author URI: http://mrtotallyawesome.com
    License: GPL2
    */
-   
+
 add_action('admin_menu', 'test_button_menu');
 
 function test_button_menu(){
@@ -20,7 +20,7 @@ function test_button_admin_page() {
 
   // This function creates the output for the admin page.
   // It also checks the value of the $_POST variable to see whether
-  // there has been a form submission. 
+  // there has been a form submission.
 
   // The check_admin_referer is a WordPress function that does some security
   // checking and is recommended good practice.
@@ -63,9 +63,9 @@ function get_files_in_dir($url){
 		/* Das ist der korrekte Weg, ein Verzeichnis zu durchlaufen. */
 		while (false !== ($file = readdir($handle))) {
 			if ($file != "." && $file != "..") {
-				$images[] = $file; 
+				$images[] = $file;
 			}
-			
+
 		}
 		closedir($handle);
 	}
@@ -77,47 +77,46 @@ function get_files_in_dir($url){
 		$img_array[] = $uploads['baseurl'].'/'.$url.'/'.$image;
 	}
 	return $img_array;
-    
+
 }
 
 function insert_img_to_wp($filename, $is_thumbnail, $parent_post_id) {
 		// Check the type of file. We'll use this as the 'post_mime_type'.
 		$filetype = wp_check_filetype( basename( $filename ), null );
-		
+
 		// Get the path to the upload directory.
 		$wp_upload_dir = wp_upload_dir();
-		
+
 		// Prepare an array of post data for the attachment.
 		$attachment = array(
-			'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ), 
+			'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
 			'post_mime_type' => $filetype['type'],
 			'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
 			'post_content'   => '',
 			'post_status'    => 'inherit'
 		);
-		
+
 		// check if attachment already exists
 		global $wpdb;
 		$image_src = $wp_upload_dir['url'] . '/' . basename( $filename );
 		$query = "SELECT COUNT(*) FROM {$wpdb->posts} WHERE guid='".$image_src."'";
 		$count = $wpdb->get_var($query);
-		
- 		if ( !$count ) {
-			// echo 'es passiert etwas';
+		echo $filename;
+ 		/*if ( !$count ) {
 			// Insert the attachment.
 			$attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
-			// echo '<h1>Bild erfolgreich hochgeladen: '.$filename.'</h1>';
+
 			// Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
 			require_once( ABSPATH . 'wp-admin/includes/image.php' );
-			
+
 			// Generate the metadata for the attachment, and update the database record.
 			$attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
 			wp_update_attachment_metadata( $attach_id, $attach_data );
-			
+
 			if ($is_thumbnail) {
 				set_post_thumbnail( $parent_post_id, $attach_id );
 			}
-		}
+		}*/
 	}
 
 
@@ -136,10 +135,10 @@ function test_button_action()
   else {
     echo '<p>Log of button click written to: ' . $path . '</p>';
 
-    fwrite ($handle , "Call Function button clicked on: " . date("D j M Y H:i:s", time())); 
+    fwrite ($handle , "Call Function button clicked on: " . date("D j M Y H:i:s", time()));
     fclose ($handle);
   } */
-  
+
 	//$remote_img_dir = "http://www.ff-pressbaum.at/images/stories/";
 	$remote_img_dir = "<wwwroot>/images/stories/";
 	$args = array(
@@ -150,22 +149,23 @@ function test_button_action()
         'meta_value' =>'', 'post_type' => 'post',
         'suppress_filters' => true
     );
-	
+
 	$latest_posts = get_posts( $args );
 	foreach ( $latest_posts as $post ) {
 		setup_postdata( $post );
         //echo "<h2><a href=" + the_permalink() + ">" + the_title() + "</a></h2>";
         //the_content();
 		$id = $post->ID;
-		//echo $id;
+    $title = get_the_title($post)
 		$str = apply_filters( 'the_content', get_the_content() );
+
+    echo "Beitrag mit ID <b>".$id."</b> hat folgende Files bzw. Folder:<br>";
+
 		preg_match_all('@\{gallery\}([^,]*?)(?:,single=([^,{]+).*?)?\{/gallery\}@',$str,$out);
-		
+
 		// Matches array:
 		//var_export($out);
 		//$out = array_unique($out);
-		
-		echo "Ergebnis Ordner und Einzelbild:<br>";
 
 		// Path + Image files array:
 		foreach(array_unique($out[2]) as $i=>$v){
@@ -173,7 +173,7 @@ function test_button_action()
 				$result[]="{$out[1][$i]}/$v";
 			}
 		}
-		
+
 		if (!empty($result)) {
 			foreach($result as $element){
 				echo $element;
@@ -184,12 +184,11 @@ function test_button_action()
 				insert_img_to_wp($uploaddir['baseurl'] . '/' . $element, 1, $id);
 			}
 		}
-		
-		echo "Ergebnis Ordner:<br>";
+
 
 		// Folders only array:
 		$folders_only = array_unique(array_filter(array_slice($out,1)[0],'strlen'));
-		
+
 		if (!empty($folders_only)) {
 			foreach($folders_only as $folder) {
 				echo $folder;
@@ -202,9 +201,9 @@ function test_button_action()
 				}
 			}
 		}
-		
+
 		// Update post
-		if (!empty($result) OR !empty($folders_only)) {
+		/*if (!empty($result) OR !empty($folders_only)) {
 			$searchpattern_single = '/\{gallery\}(.*?),single=(.*?){\/gallery\}/';
 			$searchpattern_normal = '/\{gallery\}(.*?){\/gallery\}/';
 			$new_str = preg_replace($searchpattern_single, "", $str);
@@ -213,16 +212,16 @@ function test_button_action()
 				'ID'	=> $id,
 				'post_content'	=> $final_str
 			);
-	 
+
 			// Update the post into the database
 			wp_update_post( $my_post );
-		}
-		
+		}*/
+
 		echo '<hr>';
 		$out = "";
 		$result = "";
-		
+
 	}
-  
-}  
+
+}
 ?>
