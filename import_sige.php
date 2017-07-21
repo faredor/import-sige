@@ -71,9 +71,9 @@ function get_files_in_dir($url){
 	}
 	$img_array = array();
 	foreach($images as $image) {
-/* 		echo '<li><img src="';
+		echo '<li><img src="';
 		echo $uploads['baseurl'].'/'.$url.'/'.$image;
-		echo '" alt="" /></li>'; */
+		echo '" alt="" /></li>';
 		$img_array[] = $uploads['baseurl'].'/'.$url.'/'.$image;
 	}
 	return $img_array;
@@ -103,10 +103,10 @@ function insert_img_to_wp($filename, $is_thumbnail, $parent_post_id) {
 		$count = $wpdb->get_var($query);
 		
  		if ( !$count ) {
-			// echo 'es passiert etwas';
+			echo 'es passiert etwas';
 			// Insert the attachment.
 			$attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
-			// echo '<h1>Bild erfolgreich hochgeladen: '.$filename.'</h1>';
+			echo '<h1>Bild erfolgreich hochgeladen: '.$filename.'</h1>';
 			// Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
 			require_once( ABSPATH . 'wp-admin/includes/image.php' );
 			
@@ -155,9 +155,9 @@ function test_button_action()
 	foreach ( $latest_posts as $post ) {
 		setup_postdata( $post );
         //echo "<h2><a href=" + the_permalink() + ">" + the_title() + "</a></h2>";
-        //the_content();
+        the_content();
 		$id = $post->ID;
-		//echo $id;
+		echo $id;
 		$str = apply_filters( 'the_content', get_the_content() );
 		preg_match_all('@\{gallery\}([^,]*?)(?:,single=([^,{]+).*?)?\{/gallery\}@',$str,$out);
 		
@@ -194,6 +194,7 @@ function test_button_action()
 			foreach($folders_only as $folder) {
 				echo $folder;
 				echo '<br>';
+				echo $remote_img_dir . $folder;
 				//$folder_url = $remote_img_dir . $folder . "/";
 				echo '<hr style="border-top: 1px dashed #8c8b8b;">';
 				$images_to_upload = get_files_in_dir($folder);
