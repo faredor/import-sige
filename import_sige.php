@@ -196,7 +196,6 @@ function test_button_action() {
     fclose ($handle);
   } */
 
-	//$remote_img_dir = "http://www.ff-pressbaum.at/images/stories/";
 	$remote_img_dir = "<wwwroot>/images/stories/";
 	$args = array(
         'numberposts' => -1,
